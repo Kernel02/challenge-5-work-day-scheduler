@@ -1,6 +1,3 @@
-var advancedFormat = require('dayjs/plugin/advancedFormat');
-dayjs().extend(advancedFormat);
-
 var today = dayjs();
 var savedTimeBlockEvents = JSON.parse(
   localStorage.getItem("Saved Time Block Events")
@@ -64,5 +61,5 @@ $(function () {
       $(timeBlock[i]).addClass("present");
     }
   }
-  currentDay.text(today.format("dddd, MMMM Do"));
+  currentDay.text(today.format("dddd, MMMM D"));
 });
