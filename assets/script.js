@@ -12,11 +12,13 @@ $(function () {
   var schedule = $("#schedule")[0];
   var timeBlock = schedule.children;
   for (var i = 0; i < timeBlockEvents.length; i++) {
-    var index = i;
-    var setHour = timeBlockEvents[i].hour;
-    for (var x = 0; x < timeBlock.length; x++) {
-      if (timeBlock[x].id === setHour) {
-        timeBlock[x].children[1].textContent = timeBlockEvents[index].toDo;
+    if (timeBlockEvents[i].date === today.format("dddd, MMMM D")) {
+      var index = i;
+      var setHour = timeBlockEvents[i].hour;
+      for (var x = 0; x < timeBlock.length; x++) {
+        if (timeBlock[x].id === setHour) {
+          timeBlock[x].children[1].textContent = timeBlockEvents[index].toDo;
+        }
       }
     }
   }
@@ -24,6 +26,7 @@ $(function () {
   $(schedule).on("click", function (event) {
     if (event.target.matches("button") || event.target.matches("i")) {
       var savedTime = {
+        date: today.format("dddd, MMMM D"),
         hour: $(event.target).closest("div")[0].id,
         toDo: $($(event.target).closest("div")[0].children[1]).val(),
       };
