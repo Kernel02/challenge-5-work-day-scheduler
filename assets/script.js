@@ -6,11 +6,23 @@ var timeBlockEvents = [];
 if (savedTimeBlockEvents) {
   timeBlockEvents = savedTimeBlockEvents;
 }
-console.log(timeBlockEvents);
 $(function () {
   var currentDay = $("#currentDay");
   var schedule = $("#schedule")[0];
   var timeBlock = schedule.children;
+
+  currentDay.text(today.format("dddd, MMMM D"));
+
+  for (var i = 0; i < timeBlock.length; i++) {
+    if (timeBlock[i].id < today.$H) {
+      $(timeBlock[i]).addClass("past");
+    } else if (timeBlock[i].id > today.$H) {
+      $(timeBlock[i]).addClass("future");
+    } else {
+      $(timeBlock[i]).addClass("present");
+    }
+  }
+
   for (var i = 0; i < timeBlockEvents.length; i++) {
     if (timeBlockEvents[i].date === today.format("dddd, MMMM D")) {
       var index = i;
@@ -23,43 +35,29 @@ $(function () {
     }
   }
 
-  $(schedule).on("click", function (event) {
-    if (event.target.matches("button") || event.target.matches("i")) {
-      var savedTime = {
-        date: today.format("dddd, MMMM D"),
-        hour: $(event.target).closest("div")[0].id,
-        toDo: $($(event.target).closest("div")[0].children[1]).val(),
-      };
-      if (timeBlockEvents.length > 0) {
-        var check = "";
-        for (var i = 0; i < timeBlockEvents.length; i++) {
-          if (timeBlockEvents[i].hour === savedTime.hour) {
-            check = "done";
-            timeBlockEvents[i] = savedTime;
-          }
+  $(schedule).on("click", ".saveBtn", ".fas", function (event) {
+    var savedTime = {
+      date: today.format("dddd, MMMM D"),
+      hour: $(event.target).closest("div")[0].id,
+      toDo: $($(event.target).closest("div")[0].children[1]).val(),
+    };
+    if (timeBlockEvents.length > 0) {
+      var check = "";
+      for (var i = 0; i < timeBlockEvents.length; i++) {
+        if (timeBlockEvents[i].hour === savedTime.hour) {
+          check = "done";
+          timeBlockEvents[i] = savedTime;
         }
-        if (check !== "done") {
-          timeBlockEvents.push(savedTime);
-        }
-      } else {
+      }
+      if (check !== "done") {
         timeBlockEvents.push(savedTime);
       }
-      console.log(timeBlockEvents);
-      localStorage.setItem(
-        "Saved Time Block Events",
-        JSON.stringify(timeBlockEvents)
-      );
-    }
-  });
-
-  for (var i = 0; i < timeBlock.length; i++) {
-    if (timeBlock[i].id < today.$H) {
-      $(timeBlock[i]).addClass("past");
-    } else if (timeBlock[i].id > today.$H) {
-      $(timeBlock[i]).addClass("future");
     } else {
-      $(timeBlock[i]).addClass("present");
+      timeBlockEvents.push(savedTime);
     }
-  }
-  currentDay.text(today.format("dddd, MMMM D"));
+    localStorage.setItem(
+      "Saved Time Block Events",
+      JSON.stringify(timeBlockEvents)
+    );
+  });
 });
